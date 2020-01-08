@@ -2,6 +2,18 @@ version: "3.3"
 
 # Define services
 services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/error.log:/etc/nginx/error_log.log
+    networks:
+      - backendnet
+
   # App backend service  
   back-blog:
     container_name: back-blog
@@ -10,8 +22,8 @@ services:
     build:
       context: . # Use an image built from the specified dockerfile in the `backend` directory.
       dockerfile: Dockerfile
-    ports:
-      - "4000:4000" # Forward the exposed port 4000 on the container to port 4000 on the host machine
+    expose:
+      - "4000" # Forward the exposed port 4000 on the container to port 4000 on the host machine
     restart: always
     depends_on: 
       - mongodb # This service depends on mongodb. Start that first.
